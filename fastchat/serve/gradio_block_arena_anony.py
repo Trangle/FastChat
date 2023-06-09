@@ -170,8 +170,8 @@ DEFAULT_WEIGHTS = {
     "palm-2": 1.5,
 
     "vicuna-13b": 1.5,
-    "wizardlm-13b": 1.5,
-    "gpt4all-13b-snoozy": 1.5,
+    "wizardlm-13b": 5,
+    "gpt4all-13b-snoozy": 5,
 
     "koala-13b": 1.2,
     "vicuna-7b": 1.2,
