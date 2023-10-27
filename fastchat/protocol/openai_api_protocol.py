@@ -70,7 +70,7 @@ class ChatMessage(BaseModel):
 class ChatCompletionResponseChoice(BaseModel):
     index: int
     message: ChatMessage
-    finish_reason: Optional[Literal["stop", "length"]]
+    finish_reason: Optional[Literal["stop", "length"]] = None
 
 
 class ChatCompletionResponse(BaseModel):
@@ -90,7 +90,7 @@ class DeltaMessage(BaseModel):
 class ChatCompletionResponseStreamChoice(BaseModel):
     index: int
     delta: DeltaMessage
-    finish_reason: Optional[Literal["stop", "length"]]
+    finish_reason: Optional[Literal["stop", "length"]] = None
 
 
 class ChatCompletionStreamResponse(BaseModel):
@@ -126,6 +126,7 @@ class EmbeddingsRequest(BaseModel):
     engine: Optional[str] = None
     input: Union[str, List[Any]]
     user: Optional[str] = None
+    encoding_format: Optional[str] = None
 
 
 class EmbeddingsResponse(BaseModel):
@@ -150,13 +151,15 @@ class CompletionRequest(BaseModel):
     presence_penalty: Optional[float] = 0.0
     frequency_penalty: Optional[float] = 0.0
     user: Optional[str] = None
+    use_beam_search: Optional[bool] = False
+    best_of: Optional[int] = None
 
 
 class CompletionResponseChoice(BaseModel):
     index: int
     text: str
     logprobs: Optional[int] = None
-    finish_reason: Optional[Literal["stop", "length"]]
+    finish_reason: Optional[Literal["stop", "length"]] = None
 
 
 class CompletionResponse(BaseModel):

@@ -1,4 +1,4 @@
-# OpenAI-Compatible RESTful APIs & SDK
+# OpenAI-Compatible RESTful APIs
 
 FastChat provides OpenAI-compatible APIs for its supported models, so you can use FastChat as a local drop-in replacement for OpenAI APIs.
 The FastChat server is compatible with both [openai-python](https://github.com/openai/openai-python) library and cURL commands.
@@ -18,7 +18,7 @@ python3 -m fastchat.serve.controller
 Then, launch the model worker(s)
 
 ```bash
-python3 -m fastchat.serve.model_worker --model-path lmsys/vicuna-7b-v1.3
+python3 -m fastchat.serve.model_worker --model-path lmsys/vicuna-7b-v1.5
 ```
 
 Finally, launch the RESTful API server
@@ -40,10 +40,12 @@ pip install --upgrade openai
 Then, interact with model vicuna:
 ```python
 import openai
-openai.api_key = "EMPTY" # Not support yet
+# to get proper authentication, make sure to use a valid key that's listed in
+# the --api-keys flag. if no flag value is provided, the `api_key` will be ignored.
+openai.api_key = "EMPTY"
 openai.api_base = "http://localhost:8000/v1"
 
-model = "vicuna-7b-v1.3"
+model = "vicuna-7b-v1.5"
 prompt = "Once upon a time"
 
 # create a completion
@@ -60,7 +62,7 @@ completion = openai.ChatCompletion.create(
 print(completion.choices[0].message.content)
 ```
 
-Streaming is also supported. See [test_openai_api.py](../tests/test_openai_api.py).
+Streaming is also supported. See [test_openai_api.py](../tests/test_openai_api.py).  If your api server is behind a proxy you'll need to turn off buffering, you can do so in Nginx by setting `proxy_buffering off;` in the location block for the proxy.
 
 ### cURL
 cURL is another good tool for observing the output of the api.
@@ -75,7 +77,7 @@ Chat Completions:
 curl http://localhost:8000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "vicuna-7b-v1.3",
+    "model": "vicuna-7b-v1.5",
     "messages": [{"role": "user", "content": "Hello! What is your name?"}]
   }'
 ```
@@ -85,7 +87,7 @@ Text Completions:
 curl http://localhost:8000/v1/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "vicuna-7b-v1.3",
+    "model": "vicuna-7b-v1.5",
     "prompt": "Once upon a time",
     "max_tokens": 41,
     "temperature": 0.5
@@ -97,7 +99,7 @@ Embeddings:
 curl http://localhost:8000/v1/embeddings \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "vicuna-7b-v1.3",
+    "model": "vicuna-7b-v1.5",
     "input": "Hello world!"
   }'
 ```
@@ -109,8 +111,8 @@ you can replace the `model_worker` step above with a multi model variant:
 
 ```bash
 python3 -m fastchat.serve.multi_model_worker \
-    --model-path lmsys/vicuna-7b-v1.3 \
-    --model-names vicuna-7b-v1.3 \
+    --model-path lmsys/vicuna-7b-v1.5 \
+    --model-names vicuna-7b-v1.5 \
     --model-path lmsys/longchat-7b-16k \
     --model-names longchat-7b-16k
 ```
@@ -146,5 +148,4 @@ Some features to be implemented:
 - [ ] Support more parameters like `logprobs`, `logit_bias`, `user`, `presence_penalty` and `frequency_penalty`
 - [ ] Model details (permissions, owner and create time)
 - [ ] Edits API
-- [ ] Authentication and API key
 - [ ] Rate Limitation Settings

@@ -94,13 +94,18 @@ def train():
         trust_remote_code=True,
         cache_dir=training_args.cache_dir,
     )
+    # Set RoPE scaling factor
+    orig_ctx_len = getattr(config, "max_position_embeddings", None)
+    if orig_ctx_len and training_args.model_max_length > orig_ctx_len:
+        scaling_factor = float(math.ceil(training_args.model_max_length / orig_ctx_len))
+        config.rope_scaling = {"type": "linear", "factor": scaling_factor}
+    config.use_cache = False
     model = transformers.AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         config=config,
         trust_remote_code=True,
         cache_dir=training_args.cache_dir,
     )
-    model.config.use_cache = False
     # Tie the weights
     model.tie_weights()
 
